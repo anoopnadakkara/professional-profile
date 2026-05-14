@@ -26,6 +26,9 @@ jobs:
     - name: Install mermaid-filter
       run: npm install -g mermaid-filter @mermaid-js/mermaid-cli
 
+    - name: Fix mermaid-cli index.html
+      run: cp $(npm root -g)/@mermaid-js/mermaid-cli/dist/index.html $(npm root -g)/mermaid-filter/node_modules/@mermaid-js/mermaid-cli/dist/index.html
+
     - name: Create Puppeteer config
       run: |
         cat > .puppeteer.json <<'EOF'
