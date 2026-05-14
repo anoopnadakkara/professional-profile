@@ -24,7 +24,7 @@ jobs:
         node-version: '18'
 
     - name: Install mermaid-filter
-      run: npm install -g mermaid-filter
+      run: npm install -g mermaid-filter @mermaid-js/mermaid-cli
 
     - name: Create Puppeteer config
       run: |
