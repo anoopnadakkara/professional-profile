@@ -64,15 +64,26 @@ jobs:
 
     - name: Publish PDFs to branch
       run: |
+        if [ ! -d pdfs ] || [ -z "$(find pdfs -maxdepth 1 -type f | head -n 1)" ]; then
+          echo "No PDFs to publish"
+          exit 0
+        fi
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
-        git checkout --orphan pdfs
+        git clone "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" /tmp/pdf-publish
+        cd /tmp/pdf-publish
+        if git show-ref --quiet refs/heads/pdfs; then
+          git checkout pdfs
+        else
+          git checkout --orphan pdfs
+          git rm -rf .
+        fi
         git rm -rf .
-        find . -maxdepth 1 \! -name .git \! -name . -exec rm -rf {} +
-        cp -R pdfs/* .
+        cp -R "${GITHUB_WORKSPACE}/pdfs/"* .
         git add .
-        git commit -m "Update generated PDFs"
+        git commit -m "Update generated PDFs" || echo "No changes to commit"
         git push --force origin pdfs
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_WORKSPACE: ${{ github.workspace }}
         path: pdfs/
