@@ -20,6 +20,7 @@ def process_file(filepath):
     def replace_mermaid(match):
         nonlocal count
         mermaid_code = match.group(1)
+        mermaid_code = mermaid_code.replace('<br/>', '\\n').replace('<br>', '\\n')
         count += 1
         svg_file = f'images/{safe_base}_{count}.svg'
         
