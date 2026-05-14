@@ -23,13 +23,8 @@ jobs:
       with:
         node-version: '18'
 
-    - name: Install mermaid-filter
+    - name: Install Mermaid CLI
       run: npm install -g @mermaid-js/mermaid-cli
-
-    - name: Fix mermaid-cli index.html
-      run: |
-        mkdir -p $(npm root -g)/mermaid-filter/node_modules/@mermaid-js/mermaid-cli/dist
-        cp $(npm root -g)/@mermaid-js/mermaid-cli/dist/index.html $(npm root -g)/mermaid-filter/node_modules/@mermaid-js/mermaid-cli/dist/index.html
 
     - name: Create Puppeteer config
       run: |
