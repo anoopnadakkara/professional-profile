@@ -16,11 +16,12 @@ def process_file(filepath):
     # Find all mermaid blocks
     mermaid_pattern = re.compile(r'```mermaid\n(.*?)\n```', re.DOTALL)
     count = 0
+    safe_base = re.sub(r'[^A-Za-z0-9_-]+', '-', base).strip('-')
     def replace_mermaid(match):
         nonlocal count
         mermaid_code = match.group(1)
         count += 1
-        svg_file = f'images/{base}_{count}.svg'
+        svg_file = f'images/{safe_base}_{count}.svg'
         
         # Write mermaid code to temp file
         with tempfile.NamedTemporaryFile(mode='w', suffix='.mmd', delete=False) as temp:
