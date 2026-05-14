@@ -29,8 +29,8 @@ jobs:
     - name: Create Puppeteer config
       run: |
         cat > .puppeteer.json <<'EOF'
-{"executablePath": "/usr/bin/chromium-browser", "args": ["--no-sandbox", "--disable-setuid-sandbox"]}
-EOF
+        {"executablePath": "/usr/bin/chromium-browser", "args": ["--no-sandbox", "--disable-setuid-sandbox"]}
+        EOF
 
     - name: Generate PDFs
       run: |
