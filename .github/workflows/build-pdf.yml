@@ -34,7 +34,7 @@ jobs:
         mkdir -p pdfs
         for file in case-studies/*.md resume/*.md; do
           base=$(basename "$file" .md)
-          pandoc "$file" -o "pdfs/${base}.pdf" --filter pandoc-mermaid-filter
+          pandoc "$file" -o "pdfs/${base}.pdf" --filter mermaid-filter
         done
 
     - name: Upload PDFs
