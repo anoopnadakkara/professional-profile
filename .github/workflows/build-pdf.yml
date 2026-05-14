@@ -26,8 +26,8 @@ jobs:
     - name: Install Chromium
       run: sudo apt-get install -y chromium-browser
 
-    - name: Install pandoc-mermaid-filter
-      run: npm install -g pandoc-mermaid-filter
+    - name: Install mermaid-filter
+      run: npm install -g mermaid-filter
 
     - name: Generate PDFs
       run: |
