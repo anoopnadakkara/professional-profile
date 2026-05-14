@@ -13,21 +13,24 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install Pandoc and LaTeX
+    - name: Install Pandoc, LaTeX, and Chromium
       run: |
         sudo apt-get update
-        sudo apt-get install -y pandoc texlive-latex-base texlive-fonts-recommended texlive-extra-utils texlive-latex-extra
+        sudo apt-get install -y pandoc texlive-latex-base texlive-fonts-recommended texlive-extra-utils texlive-latex-extra chromium-browser libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libxdamage1 libxkbcommon0 libgbm1 libgtk-3-0 libxss1 libasound2 libpangocairo-1.0-0 libxrandr2 libxrender1
 
     - name: Install Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '18'
 
-    - name: Install Chromium
-      run: sudo apt-get install -y chromium-browser
-
     - name: Install mermaid-filter
       run: npm install -g mermaid-filter
+
+    - name: Create Puppeteer config
+      run: |
+        cat > .puppeteer.json <<'EOF'
+{"executablePath": "/usr/bin/chromium-browser", "args": ["--no-sandbox", "--disable-setuid-sandbox"]}
+EOF
 
     - name: Generate PDFs
       run: |
