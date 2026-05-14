@@ -24,14 +24,16 @@ jobs:
         node-version: '22'
 
     - name: Install Mermaid CLI
-      run: npm install -g @mermaid-js/mermaid-cli
+      run: npm install --no-save @mermaid-js/mermaid-cli
 
     - name: Create Puppeteer config
       run: |
         printf '%s\n' '{"executablePath": "/usr/bin/chromium-browser", "args": ["--no-sandbox", "--disable-setuid-sandbox"]}' > .puppeteer.json
 
     - name: Process MD files
-      run: python3 process_md.py
+      run: |
+        export PATH="$(pwd)/node_modules/.bin:$PATH"
+        python3 process_md.py
 
     - name: Generate PDFs
       run: |
