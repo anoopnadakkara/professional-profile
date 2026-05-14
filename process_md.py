@@ -22,7 +22,7 @@ def process_file(filepath):
         mermaid_code = match.group(1)
         mermaid_code = mermaid_code.replace('<br/>', '\\n').replace('<br>', '\\n')
         count += 1
-        svg_file = f'images/{safe_base}_{count}.svg'
+        png_file = f'images/{safe_base}_{count}.png'
         
         # Write mermaid code to temp file
         with tempfile.NamedTemporaryFile(mode='w', suffix='.mmd', delete=False) as temp:
@@ -30,14 +30,14 @@ def process_file(filepath):
             temp_path = temp.name
         
         # Run mmdc with Puppeteer config to disable sandbox
-        cmd = ['mmdc', '-i', temp_path, '-o', svg_file, '-t', 'default', '-b', 'white', '-p', '.puppeteer.json', '-c', '.mermaid-config.json']
+        cmd = ['mmdc', '-i', temp_path, '-o', png_file, '-e', 'png', '-t', 'default', '-b', 'white', '-p', '.puppeteer.json', '-c', '.mermaid-config.json']
         subprocess.run(cmd, check=True)
         
         # Clean up temp
         os.unlink(temp_path)
         
         # Return img tag
-        return f'![Mermaid Diagram]({svg_file})'
+        return f'![Mermaid Diagram]({png_file})'
     
     # Replace all mermaid blocks
     new_content = mermaid_pattern.sub(replace_mermaid, content)
