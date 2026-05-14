@@ -24,23 +24,26 @@ jobs:
         node-version: '18'
 
     - name: Install mermaid-filter
-      run: npm install -g mermaid-filter @mermaid-js/mermaid-cli
+      run: npm install -g @mermaid-js/mermaid-cli
 
     - name: Fix mermaid-cli index.html
-      run: cp $(npm root -g)/@mermaid-js/mermaid-cli/dist/index.html $(npm root -g)/mermaid-filter/node_modules/@mermaid-js/mermaid-cli/dist/index.html
+      run: |
+        mkdir -p $(npm root -g)/mermaid-filter/node_modules/@mermaid-js/mermaid-cli/dist
+        cp $(npm root -g)/@mermaid-js/mermaid-cli/dist/index.html $(npm root -g)/mermaid-filter/node_modules/@mermaid-js/mermaid-cli/dist/index.html
 
     - name: Create Puppeteer config
       run: |
-        cat > .puppeteer.json <<'EOF'
-        {"executablePath": "/usr/bin/chromium-browser", "args": ["--no-sandbox", "--disable-setuid-sandbox"]}
-        EOF
+        printf '%s\n' '{"executablePath": "/usr/bin/chromium-browser", "args": ["--no-sandbox", "--disable-setuid-sandbox"]}' > .puppeteer.json
+
+    - name: Process MD files
+      run: python3 process_md.py
 
     - name: Generate PDFs
       run: |
         mkdir -p pdfs
-        for file in case-studies/*.md resume/*.md; do
+        for file in modified/*.md; do
           base=$(basename "$file" .md)
-          pandoc "$file" -o "pdfs/${base}.pdf" --filter mermaid-filter
+          pandoc "$file" -o "pdfs/${base}.pdf"
         done
 
     - name: Upload PDFs
