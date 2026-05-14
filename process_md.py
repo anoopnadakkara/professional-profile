@@ -29,7 +29,7 @@ def process_file(filepath):
             temp_path = temp.name
         
         # Run mmdc with Puppeteer config to disable sandbox
-        cmd = ['mmdc', '-i', temp_path, '-o', svg_file, '-t', 'default', '-b', 'white', '-p', '.puppeteer.json']
+        cmd = ['mmdc', '-i', temp_path, '-o', svg_file, '-t', 'default', '-b', 'white', '-p', '.puppeteer.json', '-c', '.mermaid-config.json']
         subprocess.run(cmd, check=True)
         
         # Clean up temp

@@ -30,6 +30,17 @@ jobs:
       run: |
         printf '%s\n' '{"executablePath": "/usr/bin/chromium-browser", "args": ["--no-sandbox", "--disable-setuid-sandbox"]}' > .puppeteer.json
 
+    - name: Create Mermaid config
+      run: |
+        cat > .mermaid-config.json <<'EOF'
+        {
+          "theme": "default",
+          "flowchart": {
+            "htmlLabels": true
+          }
+        }
+        EOF
+
     - name: Process MD files
       run: |
         export PATH="$(pwd)/node_modules/.bin:$PATH"
@@ -40,11 +51,28 @@ jobs:
         mkdir -p pdfs
         for file in modified/*.md; do
           base=$(basename "$file" .md)
-          pandoc "$file" -o "pdfs/${base}.pdf"
+          pandoc "$file" -o "pdfs/${base}.pdf" \
+            -V geometry:margin=1in \
+            -V papersize:a4paper
         done
 
     - name: Upload PDFs
       uses: actions/upload-artifact@v4
       with:
         name: pdfs
+        path: pdfs/
+
+    - name: Publish PDFs to branch
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git checkout --orphan pdfs
+        git rm -rf .
+        find . -maxdepth 1 \! -name .git \! -name . -exec rm -rf {} +
+        cp -R pdfs/* .
+        git add .
+        git commit -m "Update generated PDFs"
+        git push --force origin pdfs
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         path: pdfs/
