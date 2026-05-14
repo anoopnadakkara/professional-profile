@@ -1,0 +1,44 @@
+name: Build PDFs
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Pandoc and LaTeX
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y pandoc texlive-latex-base texlive-fonts-recommended texlive-extra-utils texlive-latex-extra
+
+    - name: Install Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install Chromium
+      run: sudo apt-get install -y chromium-browser
+
+    - name: Install pandoc-mermaid-filter
+      run: npm install -g pandoc-mermaid-filter
+
+    - name: Generate PDFs
+      run: |
+        mkdir -p pdfs
+        for file in case-studies/*.md resume/*.md; do
+          base=$(basename "$file" .md)
+          pandoc "$file" -o "pdfs/${base}.pdf" --filter pandoc-mermaid-filter
+        done
+
+    - name: Upload PDFs
+      uses: actions/upload-artifact@v3
+      with:
+        name: pdfs
+        path: pdfs/
