@@ -50,7 +50,7 @@ def process_file(filepath):
     print(f'Processed {filepath} -> {modified_path}')
 
 # Process all files
-for file in ['case-studies/*.md', 'resume/*.md']:
+for file in ['case-studies/*.md', 'resume/*.md', 'projects/*.md']:
     import glob
     for filepath in glob.glob(file):
         process_file(filepath)
